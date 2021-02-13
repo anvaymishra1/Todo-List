@@ -1,0 +1,13 @@
+.column{
+    width: 100%;
+    text-align: center;
+    }
+.droppable-column{
+    width: 90%;
+    /* height: 100px; */
+    /* background-color: aqua; */
+    padding: 10px 10px 0px 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}

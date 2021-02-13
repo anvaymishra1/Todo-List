@@ -1,0 +1,10 @@
+.tile{
+    margin-bottom: 10px;
+    border: 2px solid black ;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  
+  .tile.dragging{
+    background-color: #949491c5;
+  }

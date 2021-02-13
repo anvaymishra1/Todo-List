@@ -1,8 +1,10 @@
 import React ,{useState} from 'react';
 import './App.css';
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext } from "react-beautiful-dnd";
 import _ from 'lodash';
-import {v4} from "uuid"
+import {v4} from "uuid";
+
+import Column from './components/column/column';
 
 
 const tile = {
@@ -16,6 +18,7 @@ const tile2 = {
 }
 
 function App() {
+  const [text,setText] = useState(" ")
   const [state,setState] = useState({
     "todo": {
       title: "To-do",
@@ -23,54 +26,69 @@ function App() {
     },
     "inProgress": {
       title: "In Progress",
-      tiles: [tile2]
+      tiles: []
     },
     "completed": {
       title: "Completed",
-      tiles: []
+      tiles: [tile2]
     }
   })
+
+  const handleDragEnd = ({destination,source})=> {
+    if(!destination){
+      return
+    }
+    if(destination.index === source.index && destination.droppableId === source.droppableId){
+      return
+    }
+
+    const copy = {...state[source.droppableId].tiles[source.index]}
+    
+    setState(prev => {
+      prev = {...prev}
+      prev[source.droppableId].tiles.splice(source.index,1)
+      prev[destination.droppableId].tiles.splice(destination.index,0,copy)
+      return prev
+    })
+  }
+
+  const addTile = ()=>{
+    setState(prev=>{
+      return{
+        ...prev,
+        todo: {
+          title: "To-Do",
+          tiles: [
+            {
+            id: v4(),
+            content: text
+            },
+          ...prev.todo.tiles
+          ]
+      }}
+    })
+    setText("")
+    }
+    
+
   return (
     <div className="App">
-      <DragDropContext onDragEnd = {e => console.log(e)}>
+      <section className = "Container">
+      <div className = "Task-Adder">
+        <input type = "text" value = {text} onChange = {(e)=> setText(e.target.value)}>        
+        </input>
+        <button className = "button" onClick = {addTile}>Add</button>
+      </div>
+      <DragDropContext onDragEnd = {handleDragEnd}>
       {_.map(state,(data,key)=> {
         return (
-          <div  key = {key} className= {"column"}>
-            <h3>{data.title}</h3>
-          <Droppable droppableId = {key}>
-            {(provided,snapshot)=>{
-              return (
-                <div 
-                  ref = {provided.innerRef}
-                  {...provided.droppableProps}
-                  className = {"droppable-column"}
-                >
-                  {data.tiles.map((ele :T, index :num)=>{
-                    return(
-                      <Draggable key = {ele.id} index = {index} draggableId = {ele.id}>
-                        {(provided) => {
-                          return (
-                            <div
-                              ref = {provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              >
-                                {ele.content}
-                            </div>
-                          )
-                        }}
-                      </Draggable>
-                    )
-                  })}
-                </div>
-              )
-            }}
-          </Droppable>
-          </div>
+          <Column data = {data} val = {key}></Column>
         )
       })}
       </DragDropContext>
+      </section>
     </div>
+    
   );
 }
 
