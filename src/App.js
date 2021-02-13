@@ -7,14 +7,21 @@ import {v4} from "uuid";
 import Column from './components/column/column';
 
 
-const tile = {
-  id: v4(),
-  content: "Complete the project"
-}
 
-const tile2 = {
-  id: v4(),
-  content: "start the project"
+
+const tileGenerator = (tileArray, num)=>{
+  let val = [...tileArray]
+  for (let index = 0; index < num; index++) {
+    val.push({
+      id:v4(),
+      content: "lorem ipsum"
+    })
+  }
+  val.push({
+    id:v4(),
+    content: "lorem ipsum"
+  })
+  return val;
 }
 
 function App() {
@@ -22,15 +29,15 @@ function App() {
   const [state,setState] = useState({
     "todo": {
       title: "To-do",
-      tiles: [tile]
+      tiles: tileGenerator([],5)
     },
     "inProgress": {
       title: "In Progress",
-      tiles: []
+      tiles: tileGenerator([],7)
     },
     "completed": {
       title: "Completed",
-      tiles: [tile2]
+      tiles: tileGenerator([],5)
     }
   })
 
@@ -53,6 +60,8 @@ function App() {
   }
 
   const addTile = ()=>{
+    if(text === "")
+    return
     setState(prev=>{
       return{
         ...prev,
@@ -73,11 +82,12 @@ function App() {
 
   return (
     <div className="App">
+      <section className = "Heading"> <span>To Do Application</span></section>
       <section className = "Container">
       <div className = "Task-Adder">
-        <input type = "text" value = {text} onChange = {(e)=> setText(e.target.value)}>        
+        <input className = "Task-Adder-Text" type = "text" value = {text} onChange = {(e)=> setText(e.target.value)}>        
         </input>
-        <button className = "button" onClick = {addTile}>Add</button>
+        <button className = "button" onClick = {addTile}>Add a new task</button>
       </div>
       <DragDropContext onDragEnd = {handleDragEnd}>
       {_.map(state,(data,key)=> {

@@ -1,6 +1,9 @@
 .column{
     width: 100%;
     text-align: center;
+    border-left: 3px dashed rgba(238, 179, 179, 0.918);
+    color: #69a08a;
+    /* background-color: ; */
     }
 .droppable-column{
     width: 90%;
